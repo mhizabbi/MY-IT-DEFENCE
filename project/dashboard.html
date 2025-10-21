@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - DevLearn</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <span class="logo-full">DevLearn</span>
+                    <span class="logo-mini">DL</span>
+                </div>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-section="profile">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-text">Profile</span>
+                </a>
+                <a href="#" class="nav-item" data-section="courses">
+                    <span class="nav-icon">💻</span>
+                    <span class="nav-text">Courses</span>
+                </a>
+                <a href="#" class="nav-item" data-section="ebooks">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-text">E-Books</span>
+                </a>
+                <a href="#" class="nav-item" data-section="videos">
+                    <span class="nav-icon">🎥</span>
+                    <span class="nav-text">Videos</span>
+                </a>
+                <a href="#" class="nav-item" id="logoutBtn">
+                    <span class="nav-icon">🚪</span>
+                    <span class="nav-text">Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="dashboard-header">
+                <h1 id="sectionTitle">Profile</h1>
+                <div class="user-info">
+                    <span id="userWelcome">Welcome back!</span>
+                </div>
+            </header>
+
+            <div class="content-sections">
+                <!-- Profile Section -->
+                <section id="profile-section" class="content-section active">
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <div class="profile-avatar" id="userInitials">MA</div>
+                            <div class="profile-info">
+                                <h2 id="profileName">User Name</h2>
+                            </div>
+                        </div>
+                        <form class="profile-form" id="profileForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="editName">Full Name</label>
+                                    <input type="text" id="editName" name="name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="displayEmail">Email</label>
+                                    <input type="text" id="displayEmail" name="displayEmail" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="currentPassword">Current Password</label>
+                                <div class="password-input-container">
+                                    <input type="password" id="currentPassword" name="currentPassword" placeholder="Enter your current password to make changes" required>
+                                    <button type="button" class="password-toggle" data-target="currentPassword">
+                                        <span class="eye-icon">👁️</span>
+                                    </button>
+                                </div>
+                                <span class="error-message" id="currentPasswordError"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">New Password (leave blank to keep current)</label>
+                                <div class="password-input-container">
+                                    <input type="password" id="newPassword" name="password">
+                                    <button type="button" class="password-toggle" data-target="newPassword">
+                                        <span class="eye-icon">👁️</span>
+                                    </button>
+                                </div>
+                                <span class="error-message" id="newPasswordError"></span>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update Profile</button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Courses Section -->
+                <section id="courses-section" class="content-section">
+                    <div class="courses-header">
+                        <div class="courses-filters">
+                            <label for="courseSort">Sort by:</label>
+                            <select id="courseSort" class="sort-select">
+                                <option value="category">Category</option>
+                                <option value="alphabetical">Alphabetical</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="courses-grid">
+                        <!-- Web Development Languages -->
+                        <div class="course-card" data-category="Web Development Languages" data-name="HTML">
+                            <div class="course-header">
+                                <div class="course-icon">🌐</div>
+                                <div class="course-price">₦15,000</div>
+                            </div>
+                            <h3>HTML</h3>
+                            <p>Learn the foundation of web development with HTML markup language.</p>
+                            <div class="course-meta">
+                                <span>📊 Beginner</span>
+                                <span>🏷️ Web Development</span>
+                            </div>
+                        </div>
+
+                        <div class="course-card" data-category="Web Development Languages" data-name="CSS">
+                            <div class="course-header">
+                                <div class="course-icon">🎨</div>
+                                <div class="course-price">₦18,000</div>
+                            </div>
+                            <h3>CSS</h3>
+                            <p>Master styling and layout techniques for beautiful web interfaces.</p>
+                            <div class="course-meta">
+                                <span>📊 Beginner</span>
+                                <span>🏷️ Web Development</span>
+                            </div>
+                        </div>
+
+                        <div class="course-card" data-category="Web Development Languages" data-name="JavaScript">
+                            <div class="course-header">
+                                <div class="course-icon">⚡</div>
+                                <div class="course-price">₦25,000</div>
+                            </div>
+                            <h3>JavaScript</h3>
+                            <p>Build interactive web applications with modern JavaScript.</p>
+                            <div class="course-meta">
+                                <span>📊 Intermediate</span>
+                                <span>🏷️ Web Development</span>
+                            </div>
+                        </div>
+
+                        <div class="course-card" data-category="Web Development Languages" data-name="TypeScript">
+                            <div class="course-header">
+                                <div class="course-icon">📘</div>
+                                <div class="course-price">₦30,000</div>
+                            </div>
+                            <h3>TypeScript</h3>
+                            <p>Add type safety to JavaScript for large-scale applications.</p>
+                            <div class="course-meta">
+                                <span>📊 Intermediate</span>
+                                <span>🏷️ Web Development</span>
+                            </div>
+                        </div>
+
+                        <div class="course-card" data-category="Web Development Languages" data-name="PHP">
+                            <div class="course-header">
+                                <div class="course-icon">🐘</div>
+                                <div class="course-price">₦22,000</div>
+                            </div>
+                            <h3>PHP</h3>
+                            <p>Server-side scripting for dynamic web applications and APIs.</p>
+                            <div class="course-meta">
+                                <span>📊 Intermediate</span>
+                                <span>🏷️ Web Development</span>
+                            </div>
+                        </div>
+
+                        <div class="course-card" data-category="Web Development Languages" data-name="ColdFusion">
+                            <div class="course-header">
+                                <div class="course-icon">❄️</div>
+                                <div class="course-price">₦35,000</div>
+                            </div>
+                            <h3>ColdFusion</h3>
+                            <p>Rapid web application development with ColdFusion framework.</p>
+                            <div class="course-meta">
+                                <span>📊 Advanced</span>
+                                <span>🏷️ Web Development</span>
+                            </div>
+                        </div>
+
+                        <div class="course-card" data-category="Web Development Languages" data-name="Hack">
+                            <div class="course-header">
+                                <div class="course-icon">⚡</div>
+                                <div class="course-price">₦40,000</div>
+                            </div>
+                            <h3>Hack</h3>
+                            <p>Facebook's programming language for fast, reliable web development.</p>
+                            <div class="course-meta">
+                                <span>📊 Advanced</span>
+                                <span>🏷️ Web Development</span>
+                            </div>
+                        </div>
+
+                        <!-- Mobile Development -->
+                        <div class="course-card" data-category="Mobile Development" data-name="Swift">
+                            <div class="course-header">
+                                <div class="course-icon">🍎</div>
+                                <div class="course-price">₦45,000</div>
+                            </div>
+                            <h3>Swift (iOS)</h3>
+                            <p>Build native iOS applications with Apple's Swift programming language.</p>
+                            <div class="course-meta">
+                                <span>📊 Intermediate</span>
+                                <span>🏷️ Mobile Development</span>
+                            </div>
+                        </div>
+
+                        <div class="course-card" data-category="Mobile Development" data-name="Kotlin">
+                            <div class="course-header">
+                                <div class="course-icon">🤖</div>
+                                <div class="course-price">₦42,000</div>
+                            </div>
+                            <h3>Kotlin (Android)</h3>
+                            <p>Modern Android development with Kotlin programming language.</p>
+                            <div class="course-meta">
+                                <span>📊 Intermediate</span>
+                                <span>🏷️ Mobile Development</span>
+                            </div>
+                        </div>
+
+                        <div class="course-card" data-category="Mobile Development" data-name="Java">
+                            <div class="course-header">
+                                <div class="course-icon">☕</div>
+                                <div class="course-price">₦38,000</div>
+                            </div>
+                            <h3>Java (Android)</h3>
+                            <p>Traditional Android app development using Java programming.</p>
+                            <div class="course-meta">
+                                <span>📊 Intermediate</span>
+                                <span>🏷️ Mobile Development</span>
+                            </div>
+                        </div>
+
+                        <div class="course-card" data-category="Mobile Development" data-name="Dart">
+                            <div class="course-header">
+                                <div class="course-icon">🎯</div>
+                                <div class="course-price">₦40,000</div>
+                            </div>
+                            <h3>Dart (Flutter)</h3>
+                            <p>Cross-platform mobile development with Flutter framework.</p>
+                            <div class="course-meta">
+                                <span>📊 Intermediate</span>
+                                <span>🏷️ Mobile Development</span>
+                            </div>
+                        </div>
+
+                        <div class="course-card" data-category="Mobile Development" data-name="C#">
+                            <div class="course-header">
+                                <div class="course-icon">🔷</div>
+                                <div class="course-price">₦43,000</div>
+                            </div>
+                            <h3>C# (Xamarin, MAUI)</h3>
+                            <p>Cross-platform mobile apps with C# and Microsoft technologies.</p>
+                            <div class="course-meta">
+                                <span>📊 Advanced</span>
+                                <span>🏷️ Mobile Development</span>
+                            </div>
+                        </div>
+
+                        <!-- System-Level / Performance-Oriented -->
+                        <div class="course-card" data-category="System-Level / Performance-Oriented" data-name="C">
+                            <div class="course-header">
+                                <div class="course-icon">⚙️</div>
+                                <div class="course-price">₦35,000</div>
+                            </div>
+                            <h3>C</h3>
+                            <p>Low-level programming and system development with C language.</p>
+                            <div class="course-meta">
+                                <span>📊 Advanced</span>
+                                <span>🏷️ System Programming</span>
+                            </div>
+                        </div>
+
+                        <div class="course-card" data-category="System-Level / Performance-Oriented" data-name="C++">
+                            <div class="course-header">
+                                <div class="course-icon">🔧</div>
+                                <div class="course-price">₦38,000</div>
+                            </div>
+                            <h3>C++</h3>
+                            <p>Object-oriented programming and high-performance applications.</p>
+                            <div class="course-meta">
+                                <span>📊 Advanced</span>
+                                <span>🏷️ System Programming</span>
+                            </div>
+                        </div>
+
+                        <div class="course-card" data-category="System-Level / Performance-Oriented" data-name="Rust">
+                            <div class="course-header">
+                                <div class="course-icon">🦀</div>
+                                <div class="course-price">₦45,000</div>
+                            </div>
+                            <h3>Rust</h3>
+                            <p>Memory-safe systems programming with modern Rust language.</p>
+                            <div class="course-meta">
+                                <span>📊 Advanced</span>
+                                <span>🏷️ System Programming</span>
+                            </div>
+                        </div>
+
+                        <div class="course-card" data-category="System-Level / Performance-Oriented" data-name="Go">
+                            <div class="course-header">
+                                <div class="course-icon">🐹</div>
+                                <div class="course-price">₦40,000</div>
+                            </div>
+                            <h3>Go</h3>
+                            <p>Concurrent programming and scalable backend services with Go.</p>
+                            <div class="course-meta">
+                                <span>📊 Intermediate</span>
+                                <span>🏷️ System Programming</span>
+                            </div>
+                        </div>
+
+                        <div class="course-card" data-category="System-Level / Performance-Oriented" data-name="Zig">
+                            <div class="course-header">
+                                <div class="course-icon">⚡</div>
+                                <div class="course-price">₦50,000</div>
+                            </div>
+                            <h3>Zig</h3>
+                            <p>Modern systems programming with Zig's performance focus.</p>
+                            <div class="course-meta">
+                                <span>📊 Advanced</span>
+                                <span>🏷️ System Programming</span>
+                            </div>
+                        </div>
+
+                        <div class="course-card" data-category="System-Level / Performance-Oriented" data-name="Nim">
+                            <div class="course-header">
+                                <div class="course-icon">👑</div>
+                                <div class="course-price">₦48,000</div>
+                            </div>
+                            <h3>Nim</h3>
+                            <p>Efficient and expressive programming with Nim language.</p>
+                            <div class="course-meta">
+                                <span>📊 Advanced</span>
+                                <span>🏷️ System Programming</span>
+                            </div>
+                        </div>
+
+                        <div class="course-card" data-category="System-Level / Performance-Oriented" data-name="Assembly">
+                            <div class="course-header">
+                                <div class="course-icon">🔩</div>
+                                <div class="course-price">₦55,000</div>
+                            </div>
+                            <h3>Assembly Language</h3>
+                            <p>Low-level programming and computer architecture fundamentals.</p>
+                            <div class="course-meta">
+                                <span>📊 Expert</span>
+                                <span>🏷️ System Programming</span>
+                            </div>
+                        </div>
+
+                        <!-- Data Science, AI & Machine Learning -->
+                        <div class="course-card" data-category="Data Science, AI & Machine Learning" data-name="Python">
+                            <div class="course-header">
+                                <div class="course-icon">🐍</div>
+                                <div class="course-price">₦35,000</div>
+                            </div>
+                            <h3>Python (Data Science)</h3>
+                            <p>Data analysis and machine learning with NumPy, TensorFlow, PyTorch.</p>
+                            <div class="course-meta">
+                                <span>📊 Intermediate</span>
+                                <span>🏷️ Data Science</span>
+                            </div>
+                        </div>
+
+                        <div class="course-card" data-category="Data Science, AI & Machine Learning" data-name="R">
+                            <div class="course-header">
+                                <div class="course-icon">📊</div>
+                                <div class="course-price">₦32,000</div>
+                            </div>
+                            <h3>R</h3>
+                            <p>Statistical computing and data visualization with R programming.</p>
+                            <div class="course-meta">
+                                <span>📊 Intermediate</span>
+                                <span>🏷️ Data Science</span>
+                            </div>
+                        </div>
+
+                        <div class="course-card" data-category="Data Science, AI & Machine Learning" data-name="Julia">
+                            <div class="course-header">
+                                <div class="course-icon">🔬</div>
+                                <div class="course-price">₦38,000</div>
+                            </div>
+                            <h3>Julia</h3>
+                            <p>High-performance scientific computing and numerical analysis.</p>
+                            <div class="course-meta">
+                                <span>📊 Advanced</span>
+                                <span>🏷️ Data Science</span>
+                            </div>
+                        </div>
+
+                        <div class="course-card" data-category="Data Science, AI & Machine Learning" data-name="MATLAB">
+                            <div class="course-header">
+                                <div class="course-icon">📈</div>
+                                <div class="course-price">₦45,000</div>
+                            </div>
+                            <h3>MATLAB</h3>
+                            <p>Mathematical computing and algorithm development platform.</p>
+                            <div class="course-meta">
+                                <span>📊 Advanced</span>
+                                <span>🏷️ Data Science</span>
+                            </div>
+                        </div>
+
+                        <div class="course-card" data-category="Data Science, AI & Machine Learning" data-name="SAS">
+                            <div class="course-header">
+                                <div class="course-icon">📋</div>
+                                <div class="course-price">₦50,000</div>
+                            </div>
+                            <h3>SAS</h3>
+                            <p>Advanced analytics and statistical software for enterprise data.</p>
+                            <div class="course-meta">
+                                <span>📊 Advanced</span>
+                                <span>🏷️ Data Science</span>
+                            </div>
+                        </div>
+
+                        <div class="course-card" data-category="Data Science, AI & Machine Learning" data-name="Scala">
+                            <div class="course-header">
+                                <div class="course-icon">🎭</div>
+                                <div class="course-price">₦42,000</div>
+                            </div>
+                            <h3>Scala</h3>
+                            <p>Functional programming for big data processing with Apache Spark.</p>
+                            <div class="course-meta">
+                                <span>📊 Advanced</span>
+                                <span>🏷️ Data Science</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- E-Books Section -->
+                <section id="ebooks-section" class="content-section">
+                    <div class="ebooks-grid">
+                        <div class="ebook-card">
+                            <div class="ebook-cover">📖</div>
+                            <h3>Web Development Guide</h3>
+                            <p>Complete guide to modern web development practices and technologies.</p>
+                            <a href="#" class="btn btn-outline">Download PDF</a>
+                        </div>
+
+                        <div class="ebook-card">
+                            <div class="ebook-cover">📚</div>
+                            <h3>JavaScript Patterns</h3>
+                            <p>Learn advanced JavaScript patterns and best practices for scalable applications.</p>
+                            <a href="#" class="btn btn-outline">Download PDF</a>
+                        </div>
+
+                        <div class="ebook-card">
+                            <div class="ebook-cover">📘</div>
+                            <h3>CSS Mastery</h3>
+                            <p>Master CSS with advanced techniques, animations, and responsive design principles.</p>
+                            <a href="#" class="btn btn-outline">Download PDF</a>
+                        </div>
+
+                        <div class="ebook-card">
+                            <div class="ebook-cover">📗</div>
+                            <h3>React Handbook</h3>
+                            <p>Comprehensive handbook covering React fundamentals to advanced concepts.</p>
+                            <a href="#" class="btn btn-outline">Download PDF</a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- E-Book Upload Section -->
+                <div class="upload-section course-upload-section">
+                    <div class="upload-header">
+                        <h3>📚 Upload New Course</h3>
+                        <p>Add a new programming course to the platform</p>
+                    </div>
+                    
+                    <form class="course-upload-form" id="courseUploadForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="courseTitle">Course Title</label>
+                                <input type="text" id="courseTitle" name="courseTitle" placeholder="e.g., Advanced JavaScript Concepts" required>
+                                <span class="error-message" id="courseTitleError"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="courseDescription">Course Description</label>
+                            <textarea id="courseDescription" name="courseDescription" rows="4" placeholder="Provide a brief description of what students will learn in this course..." required></textarea>
+                            <span class="error-message" id="courseDescriptionError"></span>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="courseLevel">Course Level</label>
+                                <select id="courseLevel" name="courseLevel" required>
+                                    <option value="">Select Level</option>
+                                    <option value="Beginner">Beginner</option>
+                                    <option value="Intermediate">Intermediate</option>
+                                    <option value="Advanced">Advanced</option>
+                                    <option value="Expert">Expert</option>
+                                </select>
+                                <span class="error-message" id="courseLevelError"></span>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="courseCategory">Programming Category</label>
+                                <select id="courseCategory" name="courseCategory" required>
+                                    <option value="">Select Category</option>
+                                    <option value="Web Development Languages">Web Development Languages</option>
+                                    <option value="Mobile Development">Mobile Development</option>
+                                    <option value="System-Level / Performance-Oriented">System-Level / Performance-Oriented</option>
+                                    <option value="Data Science, AI & Machine Learning">Data Science, AI & Machine Learning</option>
+                                    <option value="Game Development">Game Development</option>
+                                    <option value="Desktop Applications">Desktop Applications</option>
+                                </select>
+                                <span class="error-message" id="courseCategoryError"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="coursePrice">Course Price (₦)</label>
+                                <input type="number" id="coursePrice" name="coursePrice" placeholder="25000" min="0" step="1000" required>
+                                <span class="error-message" id="coursePriceError"></span>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="courseIcon">Course Icon (Emoji)</label>
+                                <input type="text" id="courseIcon" name="courseIcon" placeholder="💻" maxlength="2">
+                                <small>Optional: Add an emoji icon for the course</small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-outline" id="resetCourseForm">Reset Form</button>
+                            <button type="submit" class="btn btn-primary">Create Course</button>
+                        </div>
+                    </form>
+
+                    <!-- Processing Status -->
+                    <div class="processing-status" id="courseProcessingStatus" style="display: none;">
+                        <div class="processing-content">
+                            <div class="processing-spinner">⏳</div>
+                            <h4>Creating Course...</h4>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="courseProgressFill"></div>
+                            </div>
+                            <p id="courseProcessingText">Setting up course structure...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Videos Section -->
+                <section id="videos-section" class="content-section">
+                    <div class="videos-grid">
+                        <div class="video-card">
+                            <div class="video-thumbnail">
+                                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h3>HTML & CSS Basics</h3>
+                            <p>Learn the fundamentals of HTML and CSS to build your first website.</p>
+                        </div>
+
+                        <div class="video-card">
+                            <div class="video-thumbnail">
+                                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h3>JavaScript ES6 Features</h3>
+                            <p>Explore modern JavaScript features including arrow functions, destructuring, and more.</p>
+                        </div>
+
+                        <div class="video-card">
+                            <div class="video-thumbnail">
+                                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <h3>React Components</h3>
+                            <p>Understanding React components, props, and state management in depth.</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Update Success Modal -->
+    <div class="modal" id="updateModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Profile Updated!</h3>
+                <span class="modal-close" id="updateModalClose">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Your profile has been successfully updated.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>
