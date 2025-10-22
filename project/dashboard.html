@@ -472,6 +472,75 @@
                             <a href="#" class="btn btn-outline">Download PDF</a>
                         </div>
                     </div>
+
+                    <!-- E-Book Upload Section -->
+                    <div class="upload-section ebook-upload-section">
+                        <div class="upload-header">
+                            <h3>📚 Upload New E-Book</h3>
+                            <p>Add a new e-book to the platform</p>
+                        </div>
+
+                        <form class="ebook-upload-form" id="ebookUploadForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="ebookTitle">E-Book Title</label>
+                                    <input type="text" id="ebookTitle" name="ebookTitle" placeholder="e.g., Advanced JavaScript Concepts" required>
+                                    <span class="error-message" id="ebookTitleError"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="ebookDescription">E-Book Description</label>
+                                <textarea id="ebookDescription" name="ebookDescription" rows="4" placeholder="Provide a brief description of the e-book content..." required></textarea>
+                                <span class="error-message" id="ebookDescriptionError"></span>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="ebookCategory">Category</label>
+                                    <select id="ebookCategory" name="ebookCategory" required>
+                                        <option value="">Select Category</option>
+                                        <option value="Web Development">Web Development</option>
+                                        <option value="Mobile Development">Mobile Development</option>
+                                        <option value="System Programming">System Programming</option>
+                                        <option value="Data Science">Data Science</option>
+                                        <option value="Game Development">Game Development</option>
+                                        <option value="Desktop Applications">Desktop Applications</option>
+                                        <option value="General Programming">General Programming</option>
+                                    </select>
+                                    <span class="error-message" id="ebookCategoryError"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="ebookIcon">Icon (Emoji)</label>
+                                    <input type="text" id="ebookIcon" name="ebookIcon" placeholder="📖" maxlength="2">
+                                    <small>Optional: Add an emoji icon for the e-book</small>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="ebookUrl">E-Book URL or File</label>
+                                <input type="text" id="ebookUrl" name="ebookUrl" placeholder="https://example.com/ebook.pdf or upload file" required>
+                                <span class="error-message" id="ebookUrlError"></span>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-outline" id="resetEbookForm">Reset Form</button>
+                                <button type="submit" class="btn btn-primary">Add E-Book</button>
+                            </div>
+                        </form>
+
+                        <div class="processing-status" id="ebookProcessingStatus" style="display: none;">
+                            <div class="processing-content">
+                                <div class="processing-spinner">⏳</div>
+                                <h4>Adding E-Book...</h4>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="ebookProgressFill"></div>
+                                </div>
+                                <p id="ebookProcessingText">Processing e-book...</p>
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
                 <!-- E-Book Upload Section -->
@@ -582,6 +651,75 @@
                             </div>
                             <h3>React Components</h3>
                             <p>Understanding React components, props, and state management in depth.</p>
+                        </div>
+                    </div>
+
+                    <!-- Video Upload Section -->
+                    <div class="upload-section video-upload-section">
+                        <div class="upload-header">
+                            <h3>🎥 Upload New Video</h3>
+                            <p>Add a new video tutorial to the platform</p>
+                        </div>
+
+                        <form class="video-upload-form" id="videoUploadForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="videoTitle">Video Title</label>
+                                    <input type="text" id="videoTitle" name="videoTitle" placeholder="e.g., Advanced JavaScript Concepts" required>
+                                    <span class="error-message" id="videoTitleError"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="videoDescription">Video Description</label>
+                                <textarea id="videoDescription" name="videoDescription" rows="4" placeholder="Provide a brief description of the video content..." required></textarea>
+                                <span class="error-message" id="videoDescriptionError"></span>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="videoCategory">Category</label>
+                                    <select id="videoCategory" name="videoCategory" required>
+                                        <option value="">Select Category</option>
+                                        <option value="Web Development">Web Development</option>
+                                        <option value="Mobile Development">Mobile Development</option>
+                                        <option value="System Programming">System Programming</option>
+                                        <option value="Data Science">Data Science</option>
+                                        <option value="Game Development">Game Development</option>
+                                        <option value="Desktop Applications">Desktop Applications</option>
+                                        <option value="General Programming">General Programming</option>
+                                    </select>
+                                    <span class="error-message" id="videoCategoryError"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="videoDuration">Duration (minutes)</label>
+                                    <input type="number" id="videoDuration" name="videoDuration" placeholder="30" min="1" required>
+                                    <span class="error-message" id="videoDurationError"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="videoUrl">Video URL (YouTube, Vimeo, or direct link)</label>
+                                <input type="text" id="videoUrl" name="videoUrl" placeholder="https://youtube.com/watch?v=..." required>
+                                <span class="error-message" id="videoUrlError"></span>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-outline" id="resetVideoForm">Reset Form</button>
+                                <button type="submit" class="btn btn-primary">Add Video</button>
+                            </div>
+                        </form>
+
+                        <div class="processing-status" id="videoProcessingStatus" style="display: none;">
+                            <div class="processing-content">
+                                <div class="processing-spinner">⏳</div>
+                                <h4>Adding Video...</h4>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="videoProgressFill"></div>
+                                </div>
+                                <p id="videoProcessingText">Processing video...</p>
+                            </div>
                         </div>
                     </div>
                 </section>

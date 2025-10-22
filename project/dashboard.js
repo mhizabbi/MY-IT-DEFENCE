@@ -591,9 +591,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize with profile section
     showSection('profile');
-    
+
     // Log login activity
     logUserActivity('Accessed dashboard');
+
+    // Initialize upload forms
+    initializeCourseUpload();
+    initializeEbookUpload();
+    initializeVideoUpload();
 
     // Password visibility toggle functionality
     const passwordToggles = document.querySelectorAll('.password-toggle');
@@ -666,295 +671,443 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     // E-book upload initialization
     function initializeEbookUpload() {
-        const urlUploadOption = document.getElementById('urlUploadOption');
-        const fileUploadOption = document.getElementById('fileUploadOption');
-        const urlUploadForm = document.getElementById('urlUploadForm');
-        const fileUploadForm = document.getElementById('fileUploadForm');
-        const processingStatus = document.getElementById('processingStatus');
-        const fileDropZone = document.getElementById('fileDropZone');
-        const fileInput = document.getElementById('fileInput');
+        const ebookUploadForm = document.getElementById('ebookUploadForm');
+        const resetEbookForm = document.getElementById('resetEbookForm');
+        const ebookProcessingStatus = document.getElementById('ebookProcessingStatus');
         const ebooksGrid = document.querySelector('.ebooks-grid');
 
-        // Upload option selection
-        if (urlUploadOption) {
-            urlUploadOption.addEventListener('click', function() {
-                showUploadForm('url');
+        if (ebookUploadForm) {
+            ebookUploadForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+                const ebookData = {
+                    title: formData.get('ebookTitle').trim(),
+                    description: formData.get('ebookDescription').trim(),
+                    category: formData.get('ebookCategory'),
+                    icon: formData.get('ebookIcon').trim() || getDefaultEbookIcon(formData.get('ebookTitle')),
+                    url: formData.get('ebookUrl').trim()
+                };
+
+                if (validateEbookForm(ebookData)) {
+                    processEbookCreation(ebookData);
+                }
             });
         }
 
-        if (fileUploadOption) {
-            fileUploadOption.addEventListener('click', function() {
-                showUploadForm('file');
+        if (resetEbookForm) {
+            resetEbookForm.addEventListener('click', function() {
+                ebookUploadForm.reset();
+                clearAllEbookErrors();
             });
         }
 
-        // Cancel buttons
-        document.getElementById('cancelUrlUpload')?.addEventListener('click', hideUploadForms);
-        document.getElementById('cancelFileUpload')?.addEventListener('click', hideUploadForms);
+        const ebookFields = ['ebookTitle', 'ebookDescription', 'ebookCategory', 'ebookUrl'];
+        ebookFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.addEventListener('blur', function() {
+                    validateEbookField(fieldId, this.value);
+                });
 
-        // URL upload processing
-        document.getElementById('processUrlUpload')?.addEventListener('click', function() {
-            const url = document.getElementById('ebookUrl').value.trim();
-            if (validateUrl(url)) {
-                processDocument(url, 'url');
+                field.addEventListener('input', function() {
+                    clearEbookError(fieldId);
+                });
             }
         });
 
-        // File drop zone functionality
-        if (fileDropZone && fileInput) {
-            fileDropZone.addEventListener('click', () => fileInput.click());
-            
-            fileDropZone.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                this.classList.add('drag-over');
-            });
+        function validateEbookForm(ebookData) {
+            let isValid = true;
+            clearAllEbookErrors();
 
-            fileDropZone.addEventListener('dragleave', function(e) {
-                e.preventDefault();
-                this.classList.remove('drag-over');
-            });
-
-            fileDropZone.addEventListener('drop', function(e) {
-                e.preventDefault();
-                this.classList.remove('drag-over');
-                const files = e.dataTransfer.files;
-                handleFileUpload(files);
-            });
-
-            fileInput.addEventListener('change', function(e) {
-                handleFileUpload(e.target.files);
-            });
-        }
-
-        function showUploadForm(type) {
-            hideUploadForms();
-            urlUploadOption.classList.remove('active');
-            fileUploadOption.classList.remove('active');
-            
-            if (type === 'url') {
-                urlUploadForm.style.display = 'block';
-                urlUploadOption.classList.add('active');
-            } else {
-                fileUploadForm.style.display = 'block';
-                fileUploadOption.classList.add('active');
-            }
-        }
-
-        function hideUploadForms() {
-            urlUploadForm.style.display = 'none';
-            fileUploadForm.style.display = 'none';
-            processingStatus.style.display = 'none';
-            urlUploadOption.classList.remove('active');
-            fileUploadOption.classList.remove('active');
-            
-            // Clear forms
-            document.getElementById('ebookUrl').value = '';
-            fileInput.value = '';
-            window.DevLearnUtils.clearError('ebookUrl');
-        }
-
-        function validateUrl(url) {
-            if (!url) {
-                window.DevLearnUtils.showError('ebookUrl', 'Please enter a valid URL');
-                return false;
-            }
-            
-            try {
-                new URL(url);
-                window.DevLearnUtils.clearError('ebookUrl');
-                return true;
-            } catch {
-                window.DevLearnUtils.showError('ebookUrl', 'Please enter a valid URL');
-                return false;
-            }
-        }
-
-        function handleFileUpload(files) {
-            if (files.length === 0) return;
-            
-            const validTypes = ['.pdf', '.doc', '.docx', '.txt'];
-            const validFiles = Array.from(files).filter(file => {
-                const extension = '.' + file.name.split('.').pop().toLowerCase();
-                return validTypes.includes(extension);
-            });
-
-            if (validFiles.length === 0) {
-                alert('Please select valid document files (PDF, DOC, DOCX, TXT)');
-                return;
+            if (!ebookData.title || ebookData.title.length < 3) {
+                showEbookError('ebookTitle', 'E-book title must be at least 3 characters long');
+                isValid = false;
             }
 
-            validFiles.forEach(file => {
-                processDocument(file, 'file');
-            });
+            if (!ebookData.description || ebookData.description.length < 20) {
+                showEbookError('ebookDescription', 'Description must be at least 20 characters long');
+                isValid = false;
+            }
+
+            if (!ebookData.category) {
+                showEbookError('ebookCategory', 'Please select a category');
+                isValid = false;
+            }
+
+            if (!ebookData.url) {
+                showEbookError('ebookUrl', 'Please enter an e-book URL');
+                isValid = false;
+            }
+
+            return isValid;
         }
 
-        function processDocument(source, type) {
-            hideUploadForms();
-            processingStatus.style.display = 'block';
-            
-            const progressFill = document.getElementById('progressFill');
-            const processingText = document.getElementById('processingText');
-            
+        function validateEbookField(fieldId, value) {
+            switch(fieldId) {
+                case 'ebookTitle':
+                    if (!value || value.length < 3) {
+                        showEbookError(fieldId, 'E-book title must be at least 3 characters long');
+                        return false;
+                    }
+                    break;
+
+                case 'ebookDescription':
+                    if (!value || value.length < 20) {
+                        showEbookError(fieldId, 'Description must be at least 20 characters long');
+                        return false;
+                    }
+                    break;
+
+                case 'ebookCategory':
+                    if (!value) {
+                        showEbookError(fieldId, 'Please select a category');
+                        return false;
+                    }
+                    break;
+
+                case 'ebookUrl':
+                    if (!value) {
+                        showEbookError(fieldId, 'Please enter an e-book URL');
+                        return false;
+                    }
+                    break;
+            }
+
+            clearEbookError(fieldId);
+            return true;
+        }
+
+        function processEbookCreation(ebookData) {
+            ebookUploadForm.style.display = 'none';
+            ebookProcessingStatus.style.display = 'block';
+
+            const progressFill = document.getElementById('ebookProgressFill');
+            const processingText = document.getElementById('ebookProcessingText');
+
             let progress = 0;
             const steps = [
-                'Analyzing document content...',
-                'Generating title and description...',
-                'Creating appropriate icon...',
-                'Finalizing e-book entry...'
+                'Processing e-book information...',
+                'Creating e-book card...',
+                'Finalizing e-book setup...'
             ];
-            
+
             const progressInterval = setInterval(() => {
-                progress += 25;
+                progress += 33.33;
                 progressFill.style.width = progress + '%';
-                
-                const stepIndex = Math.floor(progress / 25) - 1;
+
+                const stepIndex = Math.floor(progress / 33.33) - 1;
                 if (stepIndex >= 0 && stepIndex < steps.length) {
                     processingText.textContent = steps[stepIndex];
                 }
-                
+
                 if (progress >= 100) {
                     clearInterval(progressInterval);
                     setTimeout(() => {
-                        createEbookCard(source, type);
-                        hideUploadForms();
+                        createEbookCard(ebookData);
+                        resetEbookUploadForm();
                     }, 1000);
                 }
             }, 800);
         }
 
-        function createEbookCard(source, type) {
-            const title = generateTitle(source, type);
-            const description = generateDescription(title);
-            const icon = generateIcon(title);
-            
+        function createEbookCard(ebookData) {
             const ebookCard = document.createElement('div');
             ebookCard.className = 'ebook-card';
+
             ebookCard.innerHTML = `
-                <div class="ebook-cover">${icon}</div>
-                <h3>${title}</h3>
-                <p>${description}</p>
-                <a href="#" class="btn btn-outline ebook-download-btn" data-source="${type === 'url' ? source : 'local'}" data-type="${type}">Download PDF</a>
+                <div class="ebook-cover">${ebookData.icon}</div>
+                <h3>${ebookData.title}</h3>
+                <p>${ebookData.description}</p>
+                <a href="${ebookData.url}" target="_blank" class="btn btn-outline">Download PDF</a>
             `;
-            
-            // Add to grid with animation
+
             ebooksGrid.appendChild(ebookCard);
             ebookCard.style.opacity = '0';
             ebookCard.style.transform = 'translateY(20px)';
-            
+
             setTimeout(() => {
                 ebookCard.style.transition = 'all 0.5s ease';
                 ebookCard.style.opacity = '1';
                 ebookCard.style.transform = 'translateY(0)';
             }, 100);
-            
-            // Add download functionality
-            const downloadBtn = ebookCard.querySelector('.ebook-download-btn');
-            downloadBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                handleEbookDownload(this, source, type, title);
-            });
-            
-            // Log activity
-            logUserActivity(`Added new e-book: ${title}`);
+
+            logUserActivity(`Added new e-book: ${ebookData.title}`);
         }
 
-        function generateTitle(source, type) {
-            const prefixes = ['Complete Guide to', 'Mastering', 'Introduction to', 'Advanced', 'Essential'];
-            const suffixes = ['Handbook', 'Guide', 'Manual', 'Reference', 'Tutorial'];
-            
-            let baseName;
-            if (type === 'url') {
-                baseName = source.split('/').pop().split('.')[0] || 'Document';
-            } else {
-                baseName = source.name.split('.')[0];
-            }
-            
-            // Clean up filename
-            baseName = baseName.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-            
-            const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-            const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
-            
-            return Math.random() > 0.5 ? `${prefix} ${baseName}` : `${baseName} ${suffix}`;
-        }
-
-        function generateDescription(title) {
-            const descriptions = [
-                `Comprehensive resource covering all essential concepts and practical applications. Perfect for both beginners and experienced professionals.`,
-                `In-depth guide with step-by-step instructions and real-world examples. Learn through hands-on practice and expert insights.`,
-                `Complete reference material with detailed explanations and best practices. Enhance your skills with proven methodologies.`,
-                `Essential handbook featuring practical techniques and advanced strategies. Master the fundamentals and beyond.`,
-                `Detailed tutorial with comprehensive coverage of key topics. Build expertise through structured learning approach.`
-            ];
-            
-            return descriptions[Math.floor(Math.random() * descriptions.length)];
-        }
-
-        function generateIcon(title) {
-            const icons = {
-                'web': '🌐', 'html': '🌐', 'css': '🎨', 'javascript': '⚡', 'js': '⚡',
-                'python': '🐍', 'java': '☕', 'react': '⚛️', 'node': '🟢', 'php': '🐘',
-                'database': '🗄️', 'sql': '🗄️', 'api': '🔌', 'mobile': '📱', 'android': '🤖',
-                'ios': '🍎', 'swift': '🍎', 'kotlin': '🤖', 'flutter': '🎯', 'dart': '🎯',
-                'machine': '🤖', 'ai': '🤖', 'data': '📊', 'analytics': '📈', 'science': '🔬',
-                'security': '🔒', 'network': '🌐', 'cloud': '☁️', 'docker': '🐳', 'git': '📝',
-                'design': '🎨', 'ui': '🎨', 'ux': '👤', 'algorithm': '🧮', 'structure': '🏗️'
-            };
-            
+        function getDefaultEbookIcon(title) {
             const titleLower = title.toLowerCase();
-            for (const [keyword, icon] of Object.entries(icons)) {
+            const iconMap = {
+                'web': '🌐', 'html': '🌐', 'css': '🎨', 'javascript': '⚡', 'js': '⚡',
+                'python': '🐍', 'java': '☕', 'react': '⚛️', 'node': '🟢',
+                'data': '📊', 'machine': '🤖', 'ai': '🤖',
+                'mobile': '📱', 'android': '🤖', 'ios': '🍎'
+            };
+
+            for (const [keyword, icon] of Object.entries(iconMap)) {
                 if (titleLower.includes(keyword)) {
                     return icon;
                 }
             }
-            
-            // Default icons
-            const defaultIcons = ['📖', '📚', '📘', '📗', '📙', '📕'];
-            return defaultIcons[Math.floor(Math.random() * defaultIcons.length)];
+
+            return '📖';
         }
 
-        function handleEbookDownload(button, source, type, title) {
-            if (!navigator.onLine) {
-                button.textContent = 'Offline - Cannot Download';
-                button.style.backgroundColor = 'var(--gray-400)';
-                button.style.borderColor = 'var(--gray-400)';
-                button.disabled = true;
-                return;
-            }
-            
-            const originalText = button.textContent;
-            button.textContent = 'Downloading...';
-            button.disabled = true;
-            
-            setTimeout(() => {
-                if (type === 'url') {
-                    // For URL sources, open in new tab
-                    window.open(source, '_blank');
-                } else {
-                    // For file sources, create download link
-                    const link = document.createElement('a');
-                    link.href = URL.createObjectURL(source);
-                    link.download = `${title}.pdf`;
-                    link.click();
-                    URL.revokeObjectURL(link.href);
-                }
-                
-                button.textContent = 'Downloaded!';
-                button.style.backgroundColor = 'var(--success-500)';
-                button.style.color = 'white';
-                button.style.borderColor = 'var(--success-500)';
-                
-                logUserActivity(`Downloaded e-book: ${title}`);
-                
-                setTimeout(() => {
-                    button.textContent = originalText;
-                    button.disabled = false;
-                    button.style.backgroundColor = '';
-                    button.style.color = '';
-                    button.style.borderColor = '';
-                }, 2000);
-            }, 1500);
+        function resetEbookUploadForm() {
+            ebookUploadForm.style.display = 'flex';
+            ebookProcessingStatus.style.display = 'none';
+            ebookUploadForm.reset();
+            clearAllEbookErrors();
         }
+
+        function showEbookError(fieldId, message) {
+            const errorElement = document.getElementById(fieldId + 'Error');
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.classList.add('show');
+            }
+        }
+
+        function clearEbookError(fieldId) {
+            const errorElement = document.getElementById(fieldId + 'Error');
+            if (errorElement) {
+                errorElement.textContent = '';
+                errorElement.classList.remove('show');
+            }
+        }
+
+        function clearAllEbookErrors() {
+            const ebookFields = ['ebookTitle', 'ebookDescription', 'ebookCategory', 'ebookUrl'];
+            ebookFields.forEach(fieldId => {
+                clearEbookError(fieldId);
+            });
+        }
+    }
+
+    // Video upload initialization
+    function initializeVideoUpload() {
+        const videoUploadForm = document.getElementById('videoUploadForm');
+        const resetVideoForm = document.getElementById('resetVideoForm');
+        const videoProcessingStatus = document.getElementById('videoProcessingStatus');
+        const videosGrid = document.querySelector('.videos-grid');
+
+        if (videoUploadForm) {
+            videoUploadForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+                const videoData = {
+                    title: formData.get('videoTitle').trim(),
+                    description: formData.get('videoDescription').trim(),
+                    category: formData.get('videoCategory'),
+                    duration: formData.get('videoDuration'),
+                    url: formData.get('videoUrl').trim()
+                };
+
+                if (validateVideoForm(videoData)) {
+                    processVideoCreation(videoData);
+                }
+            });
+        }
+
+        if (resetVideoForm) {
+            resetVideoForm.addEventListener('click', function() {
+                videoUploadForm.reset();
+                clearAllVideoErrors();
+            });
+        }
+
+        const videoFields = ['videoTitle', 'videoDescription', 'videoCategory', 'videoDuration', 'videoUrl'];
+        videoFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.addEventListener('blur', function() {
+                    validateVideoField(fieldId, this.value);
+                });
+
+                field.addEventListener('input', function() {
+                    clearVideoError(fieldId);
+                });
+            }
+        });
+
+        function validateVideoForm(videoData) {
+            let isValid = true;
+            clearAllVideoErrors();
+
+            if (!videoData.title || videoData.title.length < 3) {
+                showVideoError('videoTitle', 'Video title must be at least 3 characters long');
+                isValid = false;
+            }
+
+            if (!videoData.description || videoData.description.length < 20) {
+                showVideoError('videoDescription', 'Description must be at least 20 characters long');
+                isValid = false;
+            }
+
+            if (!videoData.category) {
+                showVideoError('videoCategory', 'Please select a category');
+                isValid = false;
+            }
+
+            if (!videoData.duration || videoData.duration < 1) {
+                showVideoError('videoDuration', 'Please enter a valid duration');
+                isValid = false;
+            }
+
+            if (!videoData.url) {
+                showVideoError('videoUrl', 'Please enter a video URL');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function validateVideoField(fieldId, value) {
+            switch(fieldId) {
+                case 'videoTitle':
+                    if (!value || value.length < 3) {
+                        showVideoError(fieldId, 'Video title must be at least 3 characters long');
+                        return false;
+                    }
+                    break;
+
+                case 'videoDescription':
+                    if (!value || value.length < 20) {
+                        showVideoError(fieldId, 'Description must be at least 20 characters long');
+                        return false;
+                    }
+                    break;
+
+                case 'videoCategory':
+                    if (!value) {
+                        showVideoError(fieldId, 'Please select a category');
+                        return false;
+                    }
+                    break;
+
+                case 'videoDuration':
+                    if (!value || value < 1) {
+                        showVideoError(fieldId, 'Please enter a valid duration');
+                        return false;
+                    }
+                    break;
+
+                case 'videoUrl':
+                    if (!value) {
+                        showVideoError(fieldId, 'Please enter a video URL');
+                        return false;
+                    }
+                    break;
+            }
+
+            clearVideoError(fieldId);
+            return true;
+        }
+
+        function processVideoCreation(videoData) {
+            videoUploadForm.style.display = 'none';
+            videoProcessingStatus.style.display = 'block';
+
+            const progressFill = document.getElementById('videoProgressFill');
+            const processingText = document.getElementById('videoProcessingText');
+
+            let progress = 0;
+            const steps = [
+                'Processing video information...',
+                'Extracting video embed code...',
+                'Creating video card...',
+                'Finalizing video setup...'
+            ];
+
+            const progressInterval = setInterval(() => {
+                progress += 25;
+                progressFill.style.width = progress + '%';
+
+                const stepIndex = Math.floor(progress / 25) - 1;
+                if (stepIndex >= 0 && stepIndex < steps.length) {
+                    processingText.textContent = steps[stepIndex];
+                }
+
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    setTimeout(() => {
+                        createVideoCard(videoData);
+                        resetVideoUploadForm();
+                    }, 1000);
+                }
+            }, 800);
+        }
+
+        function createVideoCard(videoData) {
+            const embedUrl = getEmbedUrl(videoData.url);
+            const videoCard = document.createElement('div');
+            videoCard.className = 'video-card';
+
+            videoCard.innerHTML = `
+                <div class="video-thumbnail">
+                    <iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe>
+                </div>
+                <h3>${videoData.title}</h3>
+                <p>${videoData.description}</p>
+            `;
+
+            videosGrid.appendChild(videoCard);
+            videoCard.style.opacity = '0';
+            videoCard.style.transform = 'translateY(20px)';
+
+            setTimeout(() => {
+                videoCard.style.transition = 'all 0.5s ease';
+                videoCard.style.opacity = '1';
+                videoCard.style.transform = 'translateY(0)';
+            }, 100);
+
+            logUserActivity(`Added new video: ${videoData.title}`);
+        }
+
+        function getEmbedUrl(url) {
+            if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                const videoId = url.includes('youtu.be')
+                    ? url.split('youtu.be/')[1]?.split('?')[0]
+                    : url.split('v=')[1]?.split('&')[0];
+                return `https://www.youtube.com/embed/${videoId}`;
+            } else if (url.includes('vimeo.com')) {
+                const videoId = url.split('vimeo.com/')[1]?.split('?')[0];
+                return `https://player.vimeo.com/video/${videoId}`;
+            }
+            return url;
+        }
+
+        function resetVideoUploadForm() {
+            videoUploadForm.style.display = 'flex';
+            videoProcessingStatus.style.display = 'none';
+            videoUploadForm.reset();
+            clearAllVideoErrors();
+        }
+
+        function showVideoError(fieldId, message) {
+            const errorElement = document.getElementById(fieldId + 'Error');
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.classList.add('show');
+            }
+        }
+
+        function clearVideoError(fieldId) {
+            const errorElement = document.getElementById(fieldId + 'Error');
+            if (errorElement) {
+                errorElement.textContent = '';
+                errorElement.classList.remove('show');
+            }
+        }
+
+        function clearAllVideoErrors() {
+            const videoFields = ['videoTitle', 'videoDescription', 'videoCategory', 'videoDuration', 'videoUrl'];
+            videoFields.forEach(fieldId => {
+                clearVideoError(fieldId);
+            });
+        }
+
     }
 
     // Helper function to show field errors
